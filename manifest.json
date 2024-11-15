@@ -1,22 +1,11 @@
 {
-  "manifest_version": 3,
-  "name": "Silly Tavern Jenga Game",
-  "version": "1.0",
-  "description": "A text-based Jenga game extension for Silly Tavern with dynamic block prompts and randomized stability mechanics.",
-  "permissions": [],
-  "web_accessible_resources": [
-    {
-      "resources": ["jenga.json"],
-      "matches": ["<all_urls>"]
-    }
-  ],
-  "background": {
-    "service_worker": "jenga.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["jenga.js"]
-    }
-  ]
+    "display_name": "Silly Tavern Jenga Game",
+    "loading_order": 9,
+    "requires": [],
+    "optional": [],
+    "js": "jenga.js",
+    "css": "",
+    "author": "yourNameHere",
+    "version": "1.0.0",
+    "homePage": "yourUrlHere"
 }

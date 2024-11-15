@@ -1,10 +1,10 @@
 # SillyTavern Extension Example
 
-*Provide a brief description of how your extension works, what problem it aims to solve.*
+*Attempting to create a jenga style game to use in Silly Tavern*
 
 ## Features
 
-*Describe some of the main selling points of your extension.*
+*Designed to Pull blocks from a randomly generated jenga tower, place blocks on the top of the tower. The system will operate with a stability function, meaning every pull and placement of block adjusts the stability of the tower, with the possiblity of it collapasing depending on its stability.*
 
 ## Installation and Usage
 
@@ -14,7 +14,7 @@
 
 ### Usage
 
-*Explain how to use this extension.*
+*!pullblock = This will allow the game to start, generate the *
 
 ## Prerequisites
 

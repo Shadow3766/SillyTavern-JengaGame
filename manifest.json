@@ -1,11 +1,31 @@
 {
-    "display_name": "Name Displayed in SillyTavern",
-    "loading_order": 9,
-    "requires": [],
-    "optional": [],
-    "js": "index.js",
-    "css": "style.css",
-    "author": "yourNameHere",
-    "version": "1.0.0",
-    "homePage": "yourUrlHere"
+  "manifest_version": 3,
+  "name": "Silly Tavern Jenga Game",
+  "version": "1.0",
+  "description": "A Jenga game extension for Silly Tavern with dynamic block prompts.",
+  "permissions": [
+    "storage"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["jenga.json"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "background": {
+    "service_worker": "jenga.js"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["jenga.js"]
+    }
+  ],
+  "icons": {
+    "48": "icon.png"
+  }
 }

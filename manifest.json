@@ -1,11 +1,10 @@
 {
-    "display_name": "Silly Tavern Jenga Game",
+    "display_name": "Jenga Game",
     "loading_order": 9,
     "requires": [],
     "optional": [],
-    "js": "jenga.js",
+    "js": "index.js",
     "css": "",
-    "author": "yourNameHere",
-    "version": "1.0.0",
-    "homePage": "yourUrlHere"
+    "author": "Shadow3766",
+    "version": "1.0.0"
 }

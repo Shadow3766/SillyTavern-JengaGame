@@ -3,22 +3,23 @@ let gameActive = false;
 let tower = [];
 let pulledBlocks = [];
 let blockData = [];
+let currentBlock = null; // Keeps track of the block in hand
 
-// Load block data from jenga.json
+// Load block data from GitHub
 async function loadBlockData() {
     try {
-        const response = await fetch(chrome.runtime.getURL('jenga.json'));
+        const response = await fetch('https://raw.githubusercontent.com/Shadow3766/SillyTavern-JengaGame/refs/heads/main/jenga.json');
         if (!response.ok) throw new Error("Failed to load block data.");
         blockData = await response.json();
     } catch (error) {
+        blockData = [];
         console.error("Error loading jenga.json:", error);
-        return [];
     }
 }
 
-// Initialize tower with shuffled blocks
+// Initialize tower with shuffled blocks, grouped into layers
 function initializeTower() {
-    const shuffledBlocks = [...blockData];
+    const shuffledBlocks = [...blockData.blocks];
     for (let i = shuffledBlocks.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffledBlocks[i], shuffledBlocks[j]] = [shuffledBlocks[j], shuffledBlocks[i]];
@@ -28,22 +29,38 @@ function initializeTower() {
     for (let i = 0; i < shuffledBlocks.length; i += 3) {
         tower.push([shuffledBlocks[i], shuffledBlocks[i + 1], shuffledBlocks[i + 2]].filter(Boolean));
     }
+
+    if (tower.length < 18) {
+        throw new Error("Not enough blocks to create the tower (requires at least 54 blocks).");
+    }
 }
 
-// Randomized stability reduction
+// Randomized stability reduction (adjusted for pulling and placing blocks)
 function reduceStability(action) {
-    let reduction = Math.random() * (action === "pull" ? 10 : 5) + 2; // Pull: 2-10%, Place: 2-5%
+    let reduction = Math.random() * (action === "pull" ? 3 : 2) + 2;
     stability -= reduction;
-    if (stability <= 0 || (stability <= 35 && Math.random() < 0.3)) {
+
+    if (stability <= 0) {
         gameActive = false;
         return "The tower collapses! Game over.";
     }
+
+    if (stability <= 20 && Math.random() < 0.5) {
+        gameActive = false;
+        return "The tower collapses! Game over.";
+    }
+
     return null;
 }
 
-// Pull a block from the tower
+// Pull a block from the tower (only one block at a time, and only if no block is already in hand)
 function pullBlock() {
     if (!gameActive) return "No active game! Use !startjenga to begin.";
+
+    if (currentBlock) {
+        return "You already have a block in hand. Place it back on the tower before pulling another.";
+    }
+
     if (tower.every(layer => layer.length === 0)) {
         gameActive = false;
         return "The tower collapses! Game over.";
@@ -55,38 +72,48 @@ function pullBlock() {
     } while (randomLayer.length === 0);
 
     const blockIndex = Math.floor(Math.random() * randomLayer.length);
-    const pulledBlock = randomLayer.splice(blockIndex, 1)[0];
-    pulledBlocks.push(pulledBlock);
+    currentBlock = randomLayer.splice(blockIndex, 1)[0]; // Only one block at a time
 
     const collapseMessage = reduceStability("pull");
-    return collapseMessage || `You pulled ${pulledBlock.block_id}. Challenge: ${pulledBlock.prompt} (Stability: ${stability.toFixed(1)}%)`;
+    return collapseMessage || `You pulled ${currentBlock.block_id}. Challenge: ${currentBlock.prompt} (Stability: ${stability.toFixed(1)}%)`;
 }
 
 // Place a pulled block on top of the tower
 function placeBlock() {
     if (!gameActive) return "No active game! Use !startjenga to begin.";
-    if (pulledBlocks.length === 0) return "No blocks available to place on top. Pull a block first!";
+    if (!currentBlock) return "You don't have any blocks to place. Pull a block first!";
 
-    const placedBlock = pulledBlocks.pop();
+    // Place the pulled block back on top
     const topLayer = tower[tower.length - 1];
     if (topLayer.length < 3) {
-        topLayer.push(placedBlock);
+        topLayer.push(currentBlock);
     } else {
-        tower.push([placedBlock]);
+        tower.push([currentBlock]);
     }
 
     const collapseMessage = reduceStability("place");
-    return collapseMessage || `You placed ${placedBlock.block_id} back on top of the tower. Stability: ${stability.toFixed(1)}%`;
+    const result = collapseMessage || `You placed ${currentBlock.block_id} back on top of the tower. Stability: ${stability.toFixed(1)}%`;
+
+    // Clear current block after placing
+    currentBlock = null;
+
+    return result;
 }
 
 // Start a new game
 async function startGame() {
     stability = 100;
     gameActive = true;
+
     if (blockData.length === 0) await loadBlockData();
-    initializeTower();
+    try {
+        initializeTower();
+    } catch (error) {
+        return `Error initializing tower: ${error.message}`;
+    }
+
     pulledBlocks = [];
-    return "A new Jenga game has started! Stability is at 100%. Use !pullblock to pull a block.";
+    return `A new Jenga game has started! The tower has been successfully constructed with 18 layers. Stability is at 100%. Use !pullblock to pull a block.`;
 }
 
 // Reset the game
@@ -95,6 +122,7 @@ function resetGame() {
     gameActive = false;
     tower = [];
     pulledBlocks = [];
+    currentBlock = null;
     return "The Jenga game has been reset. Use !startjenga to begin a new game.";
 }
 
@@ -107,8 +135,9 @@ async function handleCommand(command) {
     return "Unknown command!";
 }
 
-// Event listener for Silly Tavern commands
-window.addEventListener("sillyTavernCommand", async (event) => {
-    const response = await handleCommand(event.detail.command);
-    window.dispatchEvent(new CustomEvent("sillyTavernResponse", { detail: { message: response } }));  
-});
+// Command handler for UI
+async function issueCommand(command) {
+    const output = document.getElementById("output");
+    const response = await handleCommand(command);
+    output.textContent = response;
+}

@@ -110,5 +110,45 @@ async function handleCommand(command) {
 // Event listener for Silly Tavern commands
 window.addEventListener("sillyTavernCommand", async (event) => {
     const response = await handleCommand(event.detail.command);
-    window.dispatchEvent(new CustomEvent("sillyTavernResponse", { detail: { message: response } }));
+    window.dispatchEvent(new CustomEvent("sillyTavernResponse", { detail: { message: response } }));  
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Inject the toolbar into the extensions tab
+    const extensionsTab = document.querySelector("#extensions-tab");
+    if (extensionsTab) {
+        const toolbar = document.createElement("div");
+        toolbar.id = "jenga-toolbar";
+        toolbar.innerHTML = `
+            <span>Jenga Game</span>
+            <div>
+                <button id="start-game">Start Game</button>
+                <button id="pull-block">Pull Block</button>
+                <button id="place-block">Place Block</button>
+                <button id="reset-game">Reset Game</button>
+            </div>
+        `;
+        extensionsTab.prepend(toolbar);
+
+        // Add event listeners for buttons
+        document.getElementById("start-game").addEventListener("click", () => {
+            const response = handleCommand("!startjenga");
+            alert(response);
+        });
+
+        document.getElementById("pull-block").addEventListener("click", () => {
+            const response = handleCommand("!pullblock");
+            alert(response);
+        });
+
+        document.getElementById("place-block").addEventListener("click", () => {
+            const response = handleCommand("!placeblock");
+            alert(response);
+        });
+
+        document.getElementById("reset-game").addEventListener("click", () => {
+            const response = handleCommand("!resetjenga");
+            alert(response);
+        });
+    }
 });

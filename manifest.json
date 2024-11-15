@@ -3,8 +3,8 @@
     "loading_order": 9,
     "requires": [],
     "optional": [],
-    "js": "index.js",
-    "css": "",
+    "js": "jenga.js",
+    "css": "jenga-toolbar.css",
     "author": "Shadow3766",
-    "version": "1.0.0"
+    "version": "1.0.0",
 }

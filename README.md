@@ -25,7 +25,7 @@
 
 *Consider including your own contact info for help/questions.*
 
-*How can people help add to this extension?*
+With assistance from https://github.com/ceruleandeep
 
 ## License
 

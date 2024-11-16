@@ -14,10 +14,10 @@
 
 ### Usage
 
-*!startjenga = This will start a game of jenga and generate the randomized tower.
-!pullblock = This will randomly pull a block from the tower.
-!placeblock = This will place the pulled block onto of the tower.
-!resetgame = This will reset the game after the tower collapses, or if you just want to reset.*
+*!startjenga = This will start a game of jenga and generate the randomized tower.*
+*!pullblock = This will randomly pull a block from the tower.*
+*!placeblock = This will place the pulled block onto of the tower.*
+*!resetgame = This will reset the game after the tower collapses, or if you just want to reset.*
 
 ## Support and Contributions
 

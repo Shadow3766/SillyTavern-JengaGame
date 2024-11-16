@@ -25,7 +25,7 @@
 
 *Consider including your own contact info for help/questions.*
 
-With assistance from [ceruleandeep] (https://github.com/ceruleandeep)
+With assistance from [ceruleandeep](https://github.com/ceruleandeep)
 
 ## License
 
